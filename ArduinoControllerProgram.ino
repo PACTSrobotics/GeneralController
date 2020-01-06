@@ -11,10 +11,38 @@ const char * udpAddress = "192.168.8.246";    //IP address to send UDP data to:
 const int udpPort = 5005;
 
 int analogPin=35;
-int bar=34;
+int analogPin2=34;
 
 int val=0;
-int foo=0;
+int val2=0;
+
+String motors(int xVal, int yVal){
+  int motor1, motor2;
+  x=xVal-2000;
+  y=yVal-2000;
+  Speed=(sqrt((x*x)+(y*y))*.045;
+  if(y>x and y >= -x){
+    //top
+    
+  } else if(y<x and y >= -x) {
+    //right
+  
+  } else if(y<x and y <= -x) {
+    //down
+  
+  } else {
+    //left
+  }
+
+
+  // do math here
+
+  
+  String command="{\"commands\":{\"servoMotor\":{\"leftDrive\":" + String(motor1) + ", \"rightDrive\":" + String(motor2) +"}}}";
+
+  return command;
+  
+  }
 
 void setup() {
   Serial.begin(115200);
@@ -31,17 +59,19 @@ void setup() {
 }
 
 void loop() {
-  foo = analogRead(analogPin);
-  val = analogRead(bar);  
+  val = analogRead(analogPin);
+  val2 = analogRead(analogPin2);  
 
 
   
  
-   Serial.println("val: " + String(val)+ " val2: "+ String(foo));
+   Serial.println("val: " + String(val)+ " val2: "+ String(val2));
 
 
    if(connectedToWifi){
-    String toSend="{\"commands\":{\"servoMotor\":{\"leftDrive\":100}}}";
+    
+//    String toSend="{\"commands\":{\"servoMotor\":{\"leftDrive\":100}}}";
+    String toSend=motors(val1, val2);
     uint8_t buf[255];
     toSend.getBytes(buf, toSend.length()+1);
     udp.beginPacket(udpAddress, udpPort);
