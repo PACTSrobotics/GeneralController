@@ -18,24 +18,43 @@ int val2=0;
 
 String motors(int xVal, int yVal){
   int motor1, motor2;
-  x=xVal-2000;
-  y=yVal-2000;
-  Speed=(sqrt((x*x)+(y*y))*.045;
-  if(y>x and y >= -x){
+  int x=xVal-2000;
+  int y=yVal-2000;
+  //int Speed=(sqrt((x*x)+(y*y)))*.047;
+  //int SpeedBack=90-(Speed-90);
+  if(y>=-250 && x>=-250 && y<=250 && x<=250){
+    //check operational signs. x and y cannot be two different values when using a conditional  statement 
+    //stop
+    motor1=90;
+    motor2=90;
+//    Serial.println("stop");
+  } else if(y>x && y >= -x){
     //top
+    motor1=min(int(y*0.045+90),180);
+    motor2=min(int(y*0.045+90),180);
     
-  } else if(y<x and y >= -x) {
+//    Serial.println("moving forward");
+  } else if(y<x && y >= -x){
     //right
-  
-  } else if(y<x and y <= -x) {
+    motor1=min(int(x*0.045+90),180);
+    motor2=max(int(90-x*0.045),0);
+//    Serial.println("moving right");
+  } else if(y<x && y <= -x){
     //down
-  
+    motor1=max(int(90-(0-(y*0.045))),0);
+    motor2=max(int(90-(0-(y*0.045))),0);
+//    Serial.println("moving back");
+
   } else {
     //left
-  }
+    motor1=max(int(90-(0-(x*0.045))),0);
+    motor2=min(int((0-(x*0.045))+90),180);
+//    Serial.println("moving left");
 
+  } 
+//  Serial.println(motor1);
+//  Serial.println(motor2);
 
-  // do math here
 
   
   String command="{\"commands\":{\"servoMotor\":{\"leftDrive\":" + String(motor1) + ", \"rightDrive\":" + String(motor2) +"}}}";
@@ -71,7 +90,8 @@ void loop() {
    if(connectedToWifi){
     
 //    String toSend="{\"commands\":{\"servoMotor\":{\"leftDrive\":100}}}";
-    String toSend=motors(val1, val2);
+    String toSend=motors(val, val2);
+    Serial.println(toSend);
     uint8_t buf[255];
     toSend.getBytes(buf, toSend.length()+1);
     udp.beginPacket(udpAddress, udpPort);
