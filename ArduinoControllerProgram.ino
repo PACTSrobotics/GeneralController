@@ -12,9 +12,29 @@ const int udpPort = 5005;
 
 int analogPin=35;
 int analogPin2=34;
+int analogPin3=33;
 
 int val=0;
 int val2=0;
+int val3=0;
+
+//headmotor
+String headmotor(int Hxval){
+  int hx= Hxval-2000;
+  int Headmotor;
+  if(hx<=250 && hx>=-250){
+    Headmotor=90;
+  }else if(hx<0){
+    //left
+    Headmotor=max(int(90-(0-(hx*0.045))),0);
+  }else{
+    //right
+    Headmotor=min(int(hx*0.045+90),180);
+  }
+  String command="{\"commands\":{\"forward\":{\"head\":{\"commands\":{\"servoMotor\":{\"mainDrive\":"+ String(Headmotor)+"}}}}}}";
+
+  return command; 
+}
 
 String motors(int xVal, int yVal){
   int motor1, motor2;
@@ -27,33 +47,32 @@ String motors(int xVal, int yVal){
     //stop
     motor1=90;
     motor2=90;
-//    Serial.println("stop");
+
   } else if(y>x && y >= -x){
     //top
     motor1=min(int(y*0.045+90),180);
     motor2=min(int(y*0.045+90),180);
     
-//    Serial.println("moving forward");
+
   } else if(y<x && y >= -x){
     //right
     motor1=min(int(x*0.045+90),180);
     motor2=max(int(90-x*0.045),0);
-//    Serial.println("moving right");
+
   } else if(y<x && y <= -x){
     //down
     motor1=max(int(90-(0-(y*0.045))),0);
     motor2=max(int(90-(0-(y*0.045))),0);
-//    Serial.println("moving back");
+
 
   } else {
     //left
     motor1=max(int(90-(0-(x*0.045))),0);
     motor2=min(int((0-(x*0.045))+90),180);
-//    Serial.println("moving left");
+
 
   } 
-//  Serial.println(motor1);
-//  Serial.println(motor2);
+
 
 
   
@@ -80,8 +99,7 @@ void setup() {
 void loop() {
   val = analogRead(analogPin);
   val2 = analogRead(analogPin2);  
-
-
+  val3 = analogRead(analogPin3);
   
  
    Serial.println("val: " + String(val)+ " val2: "+ String(val2));
@@ -91,7 +109,9 @@ void loop() {
     
 //    String toSend="{\"commands\":{\"servoMotor\":{\"leftDrive\":100}}}";
     String toSend=motors(val, val2);
+    String toSend2=headmotor(val3);
     Serial.println(toSend);
+    Serial.println(toSend2);
     uint8_t buf[255];
     toSend.getBytes(buf, toSend.length()+1);
     udp.beginPacket(udpAddress, udpPort);
