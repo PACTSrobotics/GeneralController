@@ -24,12 +24,15 @@ String headmotor(int Hxval){
   int Headmotor;
   if(hx<=250 && hx>=-250){
     Headmotor=90;
+    Serial.println(Headmotor);
   }else if(hx<0){
     //left
     Headmotor=max(int(90-(0-(hx*0.045))),0);
+    Serial.println(Headmotor);
   }else{
     //right
     Headmotor=min(int(hx*0.045+90),180);
+    Serial.println(Headmotor);
   }
   String command="{\"commands\":{\"forward\":{\"head\":{\"commands\":{\"servoMotor\":{\"mainDrive\":"+ String(Headmotor)+"}}}}}}";
 
