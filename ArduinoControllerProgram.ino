@@ -34,12 +34,12 @@ String headmotor(int Hxval){
     Headmotor=min(int(hx*0.045+90),180);
     Serial.println(Headmotor);
   }
-  String command="{\"commands\":{\"forward\":{\"head\":{\"commands\":{\"servoMotor\":{\"mainDrive\":"+ String(Headmotor)+"}}}}}}";
+  String command="{\"commands\":{\"servoMotor\":{\"mainDrive\":"+ String(Headmotor)+"}}}";
 
   return command; 
 }
 
-String motors(int xVal, int yVal){
+String motors(int xVal, int yVal,int Headval){
   int motor1, motor2;
   int x=xVal-2000;
   int y=yVal-2000;
@@ -79,7 +79,7 @@ String motors(int xVal, int yVal){
 
 
   
-  String command="{\"commands\":{\"servoMotor\":{\"leftDrive\":" + String(motor1) + ", \"rightDrive\":" + String(motor2) +"}}}";
+  String command="{\"commands\":{\"servoMotor\":{\"leftDrive\":" + String(motor1) + ", \"rightDrive\":" + String(motor2) +"}}, \"forward\":{\"head\":" + headmotor(Headval) + "}}";
 
   return command;
   
@@ -111,10 +111,8 @@ void loop() {
    if(connectedToWifi){
     
 //    String toSend="{\"commands\":{\"servoMotor\":{\"leftDrive\":100}}}";
-    String toSend=motors(val, val2);
-    String toSend2=headmotor(val3);
+    String toSend=motors(val, val2, val3);
     Serial.println(toSend);
-    Serial.println(toSend2);
     uint8_t buf[255];
     toSend.getBytes(buf, toSend.length()+1);
     udp.beginPacket(udpAddress, udpPort);
