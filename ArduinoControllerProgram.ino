@@ -1,7 +1,6 @@
 #include "WiFi.h"
 #include <WiFiUdp.h>
 
-
 const char* ssid = "CheeseBox";
 const char* password =  "pifiatfi";
 
@@ -20,19 +19,24 @@ int val3=0;
 
 //headmotor
 String headmotor(int Hxval){
+  Serial.println(Hxval);
   int hx= Hxval-2000;
   int Headmotor;
   if(hx<=250 && hx>=-250){
+    //normal stop or unplugged wire
     Headmotor=90;
     Serial.println(Headmotor);
-  }else if(hx<0){
-    //left
-    Headmotor=max(int(90-(0-(hx*0.045))),0);
-    Serial.println(Headmotor);
-  }else{
+    Serial.println("sto");
+  }else if(hx>0){
     //right
     Headmotor=min(int(hx*0.045+90),180);
     Serial.println(Headmotor);
+    Serial.println("rig");
+  }else{
+    //left
+    Headmotor=max(int(90-(0-(hx*0.045))),0);
+    Serial.println(Headmotor);
+    Serial.println("lef");
   }
   String command="{\"commands\":{\"servoMotor\":{\"mainDrive\":"+ String(Headmotor)+"}}}";
 
@@ -79,7 +83,7 @@ String motors(int xVal, int yVal,int Headval){
 
 
   
-  String command="{\"commands\":{\"servoMotor\":{\"leftDrive\":" + String(motor1) + ", \"rightDrive\":" + String(motor2) +"}}, \"forward\":{\"head\":" + headmotor(Headval) + "}}";
+  String command="{\"commands\":{\"servoMotor\":{\"leftDrive\":" + String(motor1) + ", \"rightDrive\":" + String(motor2) +"}, \"forward\":{\"head\":" + headmotor(Headval) + "}}}";
 
   return command;
   
